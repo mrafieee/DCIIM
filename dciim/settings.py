@@ -57,10 +57,15 @@ WSGI_APPLICATION = 'dciim.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'dciim',
+        'USER': 'dciim',
+        'PASSWORD': 'ZBwqBwM73mTwtup9',
+        'HOST': '127.0.0.1',
+        'PORT': '',
     }
 }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
