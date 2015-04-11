@@ -10,7 +10,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    list_filter = ['customer']
+    list_filter = ['owner', 'start_date', 'stop_date']
     search_fields = ('description', 'name',)
     list_per_page = 10
     save_on_top = True
