@@ -44,6 +44,20 @@ VLAN_CHOICES=(
     ('vlan95', 'Vlan 95'),
 )
 
+NET_TYPE_CHOICES=(
+    ('vlan', 'vlan'),
+    ('local', 'Local'),
+    ('flat', 'Flat'),
+    ('xvlan', 'XVLAN'),
+    ('gre', 'GRE'),
+)
+
+HYPERVISOR_CHOICES=(
+    ('kvm', 'KVM'),
+    ('qemu', 'Qemu'),
+    ('docker', 'Docker'),
+
+)
 ######################################################################
 
 class Customer(models.Model):
@@ -57,15 +71,12 @@ class Customer(models.Model):
         return self.name
 
 class Project(models.Model):
-    class Meta:
-        verbose_name = _('Project')
-        verbose_name_plural = _('Projects')
-
     name = models.CharField(_('Project Name'),max_length=300, blank=False, help_text=_('Project / Tenant name'))
     start_date = models.DateTimeField(default=datetime.now())
     stop_date = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(Customer)
     description = models.TextField(blank=True, null=True)
+    resources = models.TextField(blank=True, null=True)
     def __unicode__(self):
         return self.name
 
@@ -79,15 +90,46 @@ class User(models.Model):
 
 class Network(models.Model):
     project = models.ForeignKey(Project)
-    name = models.CharField(_('User full name'),max_length=100, blank=False)
+    name = models.CharField(_('Network name'),max_length=100, blank=False)
     network = models.CharField(max_length=100, blank=False)
     netmask = models.CharField(max_length=100, blank=False)
+    type = models.CharField(max_length=100, blank=False, choices=NET_TYPE_CHOICES, default="local")
+    gateway = models.CharField(_('Gateway IP address'),max_length=100, blank=False)
+    dhcp = models.BooleanField(default=True)
     def __unicode__(self):
-        return self.name
+        return self.network
 
 class Router(models.Model):
     project = models.ForeignKey(Project)
     name = models.CharField(_('User full name'),max_length=100, blank=False)
+    internal_ip = models.CharField(_('Datacenter internal IP address'),max_length=100, blank=False)
+    external_ip = models.CharField(_('Valid IP address'),max_length=100, blank=False)
+    def __unicode__(self):
+        return self.name
+
+class Port(models.Model):
+    router = models.ForeignKey(Router)
+    network = models.ForeignKey(Network)
+    ip = models.CharField(_('port IP address'),max_length=100, blank=False)
+    def __unicode__(self):
+        return self.name
+
+class Instance(models.Model):
+    project = models.ForeignKey(Project)
+    machine = models.ForeignKey(Infrastructure)
+    name = models.CharField(max_length=100, blank=False)
+    ram = models.CharField(max_length=100, blank=True, null=True)
+    hdd = models.CharField(max_length=100, blank=True, null=True)
+    cpu = models.CharField(max_length=100, blank=True, null=True)
+    flavor = models.CharField(max_length=100, blank=True, null=True)
+    hypervisor = models.CharField(max_length=100, blank=False, choices=HYPERVISOR_CHOICES, default="qemu")
+    gateway = models.ForeignKey(Router)
+    network = models.ForeignKey(Network)
+    openstack_internal_ip = models.CharField(_('Openstack internal IP address'),max_length=100, blank=False)
+    internal_ip = models.CharField(_('Datacenter internal IP address'),max_length=100, blank=False)
+    external_ip = models.CharField(_('Valid IP address'),max_length=100, blank=False)
+    datacenter_firewall = models.CharField(max_length=100, blank=True, null=True)
+    internal_firewall = models.CharField(max_length=100, blank=True, null=True)
     def __unicode__(self):
         return self.name
 ######################################################################
@@ -121,6 +163,7 @@ class Infrastructure(models.Model):
     hdd_raid = models.CharField(max_length=100, blank=False, choices=RAID_CHOICES)
     operating_system = models.CharField(max_length=100, blank=False)
     nic_count = models.CharField(max_length=100, blank=False)
+    rackno = models.CharField(max_length=100, blank=False)
     guarantee = models.CharField(max_length=300, blank=False)
     def __unicode__(self):
         return self.hostname
