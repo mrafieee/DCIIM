@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 # from dciim.settings import LANGUAGES
 
-
+################################# this block changed to a model
 ROLE_CHOICES=(
     ('controller', _('Openstack controller node')),
     ('network', _('Openstack network node')),
@@ -20,6 +20,13 @@ TYPE_CHOICES=(
     ('blade BL20P G3', 'blade BL20P G3'),
     ('blade BL45P G3', 'blade BL45P G3'),
 )
+######################################################################
+USER_ROLE_CHOICES=(
+    ('member', 'Member'),
+    ('admin', 'Administrator'),
+    ('keystone admin', 'Keystone Admin'),
+)
+
 RAID_CHOICES=(
     ('RAID 0', 'RAID 0'),
     ('RAID 1', 'RAID 1'),
@@ -27,13 +34,20 @@ RAID_CHOICES=(
     ('RAID 1 + 0', 'RAID 1 + 0'),
 )
 
+VLAN_CHOICES=(
+    ('trunk', 'Trunk'),
+    ('vlan90', 'Vlan 90'),
+    ('vlan91', 'Vlan 91'),
+    ('valn92', 'Vlan 92'),
+    ('vlan93', 'Vlan 93'),
+    ('vlan94', 'Vlan 94'),
+    ('vlan95', 'Vlan 95'),
+)
+
+######################################################################
 
 class Customer(models.Model):
-    class Meta:
-       verbose_name = _('Customer')
-       verbose_name_plural = _('Customers')
-
-    name = models.CharField(_('Customer name'),max_length=100, blank=False)
+    name = models.CharField(_('Customer full name'),max_length=100, blank=False)
     phone = models.CharField(max_length=100, blank=False)
     email = models.CharField(max_length=100, blank=False)
     secondary_email = models.CharField(max_length=100, blank=True, null=True)
@@ -55,30 +69,70 @@ class Project(models.Model):
     def __unicode__(self):
         return self.name
 
+class User(models.Model):
+    name = models.CharField(_('User full name'),max_length=100, blank=False)
+    email = models.CharField(max_length=100, blank=False)
+    project = models.ForeignKey(Project)
+    role = models.CharField(max_length=100, blank=False, choices=USER_ROLE_CHOICES)
+    def __unicode__(self):
+        return self.name
 
+class Network(models.Model):
+    project = models.ForeignKey(Project)
+    name = models.CharField(_('User full name'),max_length=100, blank=False)
+    network = models.CharField(max_length=100, blank=False)
+    netmask = models.CharField(max_length=100, blank=False)
+    def __unicode__(self):
+        return self.name
+
+class Router(models.Model):
+    project = models.ForeignKey(Project)
+    name = models.CharField(_('User full name'),max_length=100, blank=False)
+    def __unicode__(self):
+        return self.name
+######################################################################
+
+class InfrastructureType(models.Model):
+    class Meta:
+        verbose_name = _('Infrastructure Type')
+        verbose_name_plural = _('Infrastructure Types')
+    name = models.CharField(max_length=100, blank=False)
+    description = models.TextField(blank=True, null=True)
+    def __unicode__(self):
+        return self.name
+
+class InfrastructureRole(models.Model):
+    class Meta:
+        verbose_name = _('Infrastructure Role')
+        verbose_name_plural = _('Infrastructure Roles')
+    name = models.CharField(max_length=100, blank=False)
+    description = models.TextField(blank=True, null=True)
+    def __unicode__(self):
+        return self.name
 
 class Infrastructure(models.Model):
-    class Meta:
-        verbose_name = _('Infrastructure')
-        verbose_name_plural = _('Infrastructures')
-
     data_center_code = models.CharField(max_length=100, blank=False)
     hostname = models.CharField(max_length=100, blank=False)
-    role = models.CharField(max_length=100, blank=False)
-    server_type = models.CharField(max_length=300, blank=False, choices=TYPE_CHOICES)
+    role = models.ForeignKey(InfrastructureRole)
+    type = models.ForeignKey(InfrastructureType)
     ram = models.CharField(max_length=100, blank=False)
     cpu = models.CharField(max_length=100, blank=False)
     hdd = models.CharField(max_length=100, blank=False)
     hdd_raid = models.CharField(max_length=100, blank=False, choices=RAID_CHOICES)
     operating_system = models.CharField(max_length=100, blank=False)
     nic_count = models.CharField(max_length=100, blank=False)
-    nic_mac = models.CharField(max_length=100, blank=False)
-    nic_vlan = models.CharField(max_length=100, blank=False)
-    nic_switch_port = models.CharField(max_length=100, blank=False)
-    nic_internal_ip = models.CharField(max_length=100, blank=False)
-    nic_external_ip = models.CharField(max_length=100, blank=False)
-    firewall_access_rules = models.CharField(max_length=100, blank=False)
     guarantee = models.CharField(max_length=300, blank=False)
-
     def __unicode__(self):
         return self.hostname
+
+class Nic(models.Model):
+    infrastructure = models.ForeignKey(Infrastructure)
+    name = models.CharField(max_length=100, null=True, blank=True, help_text=_("for example eth0, eth1, ..."))
+    mac = models.CharField(max_length=100, blank=False)
+    vlan = models.CharField(max_length=100, null=True, blank=True, choices=VLAN_CHOICES)
+    switch_port = models.CharField(max_length=100, null=True, blank=True)
+    internal_ip = models.CharField(max_length=100, blank=False)
+    external_ip = models.CharField(max_length=100, null=True, blank=True)
+    firewall_access_rules = models.CharField(max_length=100, blank=False)
+    def __unicode__(self):
+        return self.internal_ip
