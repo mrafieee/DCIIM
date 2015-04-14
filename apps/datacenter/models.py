@@ -28,10 +28,10 @@ USER_ROLE_CHOICES=(
 )
 
 RAID_CHOICES=(
-    ('RAID 0', 'RAID 0'),
-    ('RAID 1', 'RAID 1'),
-    ('RAID 5', 'RAID 5'),
-    ('RAID 1 + 0', 'RAID 1 + 0'),
+    ('raid0', 'RAID 0'),
+    ('raid1', 'RAID 1'),
+    ('raid5', 'RAID 5'),
+    ('raid1+0', 'RAID 1 + 0'),
 )
 
 VLAN_CHOICES=(
@@ -114,26 +114,6 @@ class Port(models.Model):
     def __unicode__(self):
         return self.name
 
-class Instance(models.Model):
-    project = models.ForeignKey(Project)
-    machine = models.ForeignKey(Infrastructure)
-    name = models.CharField(max_length=100, blank=False)
-    ram = models.CharField(max_length=100, blank=True, null=True)
-    hdd = models.CharField(max_length=100, blank=True, null=True)
-    cpu = models.CharField(max_length=100, blank=True, null=True)
-    flavor = models.CharField(max_length=100, blank=True, null=True)
-    hypervisor = models.CharField(max_length=100, blank=False, choices=HYPERVISOR_CHOICES, default="qemu")
-    gateway = models.ForeignKey(Router)
-    network = models.ForeignKey(Network)
-    openstack_internal_ip = models.CharField(_('Openstack internal IP address'),max_length=100, blank=False)
-    internal_ip = models.CharField(_('Datacenter internal IP address'),max_length=100, blank=False)
-    external_ip = models.CharField(_('Valid IP address'),max_length=100, blank=False)
-    datacenter_firewall = models.CharField(max_length=100, blank=True, null=True)
-    internal_firewall = models.CharField(max_length=100, blank=True, null=True)
-    def __unicode__(self):
-        return self.name
-######################################################################
-
 class InfrastructureType(models.Model):
     class Meta:
         verbose_name = _('Infrastructure Type')
@@ -160,11 +140,12 @@ class Infrastructure(models.Model):
     ram = models.CharField(max_length=100, blank=False)
     cpu = models.CharField(max_length=100, blank=False)
     hdd = models.CharField(max_length=100, blank=False)
-    hdd_raid = models.CharField(max_length=100, blank=False, choices=RAID_CHOICES)
+    hdd_raid = models.CharField(max_length=100, blank=False, choices=RAID_CHOICES,default="raid5")
     operating_system = models.CharField(max_length=100, blank=False)
     nic_count = models.CharField(max_length=100, blank=False)
     rackno = models.CharField(max_length=100, blank=False)
     guarantee = models.CharField(max_length=300, blank=False)
+    description = models.TextField(blank=True, null=True)
     def __unicode__(self):
         return self.hostname
 
@@ -179,3 +160,24 @@ class Nic(models.Model):
     firewall_access_rules = models.CharField(max_length=100, blank=False)
     def __unicode__(self):
         return self.internal_ip
+
+class Instance(models.Model):
+    project = models.ForeignKey(Project)
+    machine = models.ForeignKey(Infrastructure)
+    name = models.CharField(max_length=100, blank=False)
+    ram = models.CharField(max_length=100, blank=True, null=True)
+    hdd = models.CharField(max_length=100, blank=True, null=True)
+    cpu = models.CharField(max_length=100, blank=True, null=True)
+    flavor = models.CharField(max_length=100, blank=True, null=True)
+    glance_image = models.CharField(max_length=100, blank=True, null=True)
+    hypervisor = models.CharField(max_length=100, blank=False, choices=HYPERVISOR_CHOICES, default="qemu")
+    gateway = models.ForeignKey(Router)
+    network = models.ForeignKey(Network)
+    openstack_internal_ip = models.CharField(_('Openstack internal IP address'),max_length=100, blank=False)
+    internal_ip = models.CharField(_('Datacenter internal IP address'),max_length=100, blank=False)
+    external_ip = models.CharField(_('Valid IP address'),max_length=100, blank=False)
+    datacenter_firewall = models.CharField(max_length=100, blank=True, null=True)
+    internal_firewall = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    def __unicode__(self):
+        return self.name
