@@ -39,7 +39,7 @@ class InfrastructureAdmin(admin.ModelAdmin):
 
 
 class InstanceAdmin(admin.ModelAdmin):
-    list_display = ('project', 'machine', 'name', 'ram', 'cpu', 'hdd')
+    list_display = ('name', 'machine', 'project', 'ram', 'cpu', 'hdd')
     list_per_page = 20
     list_filter = ['project', 'machine', 'hypervisor', 'glance_image']
     search_fields = ('name', 'description',)

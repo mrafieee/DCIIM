@@ -13,6 +13,7 @@ RAID_CHOICES = (
     ('raid1', 'RAID 1'),
     ('raid5', 'RAID 5'),
     ('raid1+0', 'RAID 1 + 0'),
+    ('softwareraid5', 'Software RAID 5'),
 )
 
 VLAN_CHOICES = (
@@ -71,7 +72,7 @@ class User(models.Model):
     name = models.CharField(_('User full name'), max_length=100, blank=False)
     email = models.CharField(max_length=100, blank=False)
     project = models.ForeignKey(Project)
-    role = models.CharField(max_length=100, blank=False, choices=USER_ROLE_CHOICES)
+    role = models.CharField(max_length=100, blank=False, choices=USER_ROLE_CHOICES, default="member")
 
     def __unicode__(self):
         return self.name
@@ -182,7 +183,7 @@ class Instance(models.Model):
     internal_ip = models.CharField(_('Datacenter internal IP address'), max_length=100, blank=False)
     external_ip = models.CharField(_('Valid IP address'), max_length=100, blank=False)
     datacenter_firewall = models.CharField(max_length=100, blank=True, null=True)
-    internal_firewall = models.CharField(max_length=100, blank=True, null=True)
+    internal_firewall = models.CharField(max_length=100, blank=True, null=True, default="default")
     description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):
