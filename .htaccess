@@ -1,0 +1,7 @@
+SetEnv PROCESS_GROUP mysitepool
+AddHandler wsgi-script .wsgi
+Options +ExecCGI
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ DCIIM/index.wsgi/$1 [QSA,L]
