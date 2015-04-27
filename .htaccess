@@ -4,4 +4,4 @@ Options +ExecCGI
 RewriteEngine On
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ DCIIM/index.wsgi/$1 [QSA,L]
+RewriteRule ^(.*)$ dciim/wsgi.py/$1 [QSA,L]

@@ -46,6 +46,7 @@ HYPERVISOR_CHOICES = (
 class Customer(models.Model):
     name = models.CharField(_('Customer full name'), max_length=100, blank=False)
     contract_date = models.DateTimeField(default=datetime.now())
+    #project = models.ManyToManyField(Project)
     phone = models.CharField(max_length=100, blank=False)
     email = models.CharField(max_length=100, blank=False)
     secondary_email = models.CharField(max_length=100, blank=True, null=True)
@@ -135,7 +136,7 @@ class InfrastructureRole(models.Model):
 
 
 class Infrastructure(models.Model):
-    data_center_code = models.CharField(max_length=100, blank=False)
+    data_center_code = models.CharField(max_length=100, blank=True, null=True)
     hostname = models.CharField(max_length=100, blank=False)
     role = models.ForeignKey(InfrastructureRole)
     type = models.ForeignKey(InfrastructureType)
@@ -145,8 +146,9 @@ class Infrastructure(models.Model):
     hdd_raid = models.CharField(max_length=100, blank=False, choices=RAID_CHOICES, default="raid5")
     operating_system = models.CharField(max_length=100, blank=False, default="Debian Wheezy")
     nic_count = models.CharField(max_length=100, blank=False)
-    rackno = models.CharField(max_length=100, blank=False)
-    guarantee = models.CharField(max_length=300, null=True)
+    rack_number = models.CharField(max_length=100, blank=False)
+    rack_u_number = models.CharField(max_length=100, blank=False)
+    guarantee = models.CharField(max_length=300, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     def __unicode__(self):

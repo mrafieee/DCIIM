@@ -4,7 +4,7 @@ from django.contrib import admin
 
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone', 'email', 'secondary_email')
-    list_filter = ['contract_date', ]
+    list_filter = ['contract_date',('project', admin.RelatedOnlyFieldListFilter), ]
     search_fields = ('description', 'name',)
     list_per_page = 10
     save_on_top = True
@@ -18,7 +18,7 @@ class NicInline(admin.TabularInline):
 class InfrastructureAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'data_center_code', 'role', 'type', 'operating_system')
     list_per_page = 20
-    list_filter = ['role', 'type', 'rackno']
+    list_filter = ['role', 'type', 'rack_number']
     search_fields = ('hostname', 'server_type',)
     save_on_top = True
     inlines = [NicInline]
