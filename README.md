@@ -2,6 +2,10 @@
 Data center Infrastructures Information Management (DCIIM) is a simple handy application to handle and manage datadcenter's information.
 my default deployment for this app is to manage openstack user and infra. information for the openstack deployment so it may exist a lot of openstack phrases and names there.
 
+TODOs
+----------
+Connecting directly to openstack databases and data gatheing
+
 
 Deployment Requirements
 -----------
