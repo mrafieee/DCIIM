@@ -4,7 +4,7 @@ from django.contrib import admin
 
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone', 'email', 'secondary_email')
-    list_filter = ['contract_date',('project', admin.RelatedOnlyFieldListFilter), ]
+    list_filter = ['contract_date', ]
     search_fields = ('description', 'name',)
     list_per_page = 10
     save_on_top = True

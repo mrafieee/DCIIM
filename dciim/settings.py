@@ -24,19 +24,31 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+TEMPLATES = [
+    {
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+            ],
+        },
+    },
+]
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = (    
+    'material',
+    'material.admin',
+#    'material.frontend',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south',
+#    'south',
     'apps',
     'apps.datacenter',
 )
@@ -57,6 +69,10 @@ WSGI_APPLICATION = 'dciim.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
+SOUTH_DATABASE_ADAPTERS = {
+    'default': "south.db.mysql"
+}
 
 DATABASES = {
     'default': {
