@@ -9,14 +9,14 @@ Connecting directly to openstack databases and data gatheing
 
 Deployment Requirements
 -----------
-* django 1.6
+* django 1.8
 * mysql-server
 
 DevOps Tools
 ------------
-* django 1.6
+* django 1.8
 * git
-* south
+* material
 
 Deployment instruction on Debian Jessie
 ------------
