@@ -14,6 +14,7 @@ RAID_CHOICES = (
     ('raid5', 'RAID 5'),
     ('raid1+0', 'RAID 1 + 0'),
     ('softwareraid5', 'Software RAID 5'),
+    ('raid1+ceph', 'RAID 1 + ceph'),
 )
 
 VLAN_CHOICES = (
@@ -38,7 +39,18 @@ HYPERVISOR_CHOICES = (
     ('kvm', 'KVM'),
     ('qemu', 'Qemu'),
     ('docker', 'Docker'),
+)
+GROUP_CHOICES = (
+    ('OX', 'OX'),
+    ('NeX', 'NeX'),
+    ('DeX', 'DeX'),
+)
 
+STATE_CHOICES = (
+    ('Operational', 'Operational'),
+    ("Under maintenance", 'Under maintenance'),
+    ('Damaged', 'Damaged'),
+    ('Not Configured', 'Not Configured'),
 )
 ######################################################################
 
@@ -136,12 +148,15 @@ class Infrastructure(models.Model):
     hostname = models.CharField(max_length=100, blank=False)
     role = models.ForeignKey(InfrastructureRole)
     type = models.ForeignKey(InfrastructureType)
+    group = models.CharField(max_length=100, blank=False, choices=GROUP_CHOICES, default="OX")
+    state = models.CharField(max_length=100, blank=False, choices=STATE_CHOICES, default="Operational")
     ram = models.CharField(max_length=100, blank=False)
     cpu = models.CharField(max_length=100, blank=False)
     hdd = models.CharField(max_length=100, blank=False)
     hdd_raid = models.CharField(max_length=100, blank=False, choices=RAID_CHOICES, default="raid5")
     operating_system = models.CharField(max_length=100, blank=False, default="Debian Wheezy")
     nic_count = models.CharField(max_length=100, blank=False)
+    datacenter_name = models.CharField(max_length=100, default="ITRC Datacenter", blank=False)
     rack_number = models.CharField(max_length=100, blank=False)
     rack_u_number = models.CharField(max_length=100, blank=False)
     guarantee = models.CharField(max_length=300, blank=True, null=True)

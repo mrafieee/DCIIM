@@ -87,6 +87,14 @@ DATABASES = {
         'PASSWORD': 'ZBwqBwM73mTwtup9',
         'HOST': '127.0.0.1',
         'PORT': '',
+    },
+    'keystone': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'keystonedb',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': '127.0.0.1',
+        'PORT': '',
     }
 }
 

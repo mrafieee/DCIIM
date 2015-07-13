@@ -17,7 +17,7 @@ class NicInline(admin.TabularInline):
 
 class InfrastructureAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'data_center_code', 'role', 'type', 'operating_system')
-    list_per_page = 20
+    list_per_page = 50
     list_filter = ['role', 'type', 'rack_number']
     search_fields = ('hostname', 'server_type',)
     save_on_top = True
