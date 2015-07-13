@@ -42,33 +42,6 @@ HYPERVISOR_CHOICES = (
 )
 ######################################################################
 
-
-class Customer(models.Model):
-    name = models.CharField(_('Customer full name'), max_length=100, blank=False)
-    contract_date = models.DateTimeField(default=datetime.now())
-    #project = models.ManyToManyField(Project)
-    phone = models.CharField(max_length=100, blank=False)
-    email = models.CharField(max_length=100, blank=False)
-    secondary_email = models.CharField(max_length=100, blank=True, null=True)
-    address = models.CharField(max_length=100, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-
-    def __unicode__(self):
-        return self.name
-
-
-class Project(models.Model):
-    name = models.CharField(_('Project Name'), max_length=300, blank=False, help_text=_('Project / Tenant name'))
-    start_date = models.DateTimeField(default=datetime.now())
-    stop_date = models.DateTimeField(blank=True, null=True)
-    owner = models.ForeignKey(Customer)
-    description = models.TextField(blank=True, null=True)
-    resources = models.TextField(blank=True, null=True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class User(models.Model):
     name = models.CharField(_('User full name'), max_length=100, blank=False)
     email = models.CharField(max_length=100, blank=False)
@@ -78,6 +51,29 @@ class User(models.Model):
     def __unicode__(self):
         return self.name
 
+class Customer(models.Model):
+    user = models.ForeignKey(User)
+    contract_date = models.DateTimeField(default=datetime.now())
+    phone = models.CharField(max_length=100, blank=False)
+    secondary_email = models.CharField(max_length=100, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.user
+
+
+class Project(models.Model):
+    name = models.CharField(_('Project Name'), max_length=300, blank=False, help_text=_('Project / Tenant name'))
+    tenant_id = models.CharField(max_length=100, blank=True, null=True)
+    start_date = models.DateTimeField(default=datetime.now())
+    stop_date = models.DateTimeField(blank=True, null=True)
+    owner = models.ForeignKey(Customer)
+    description = models.TextField(blank=True, null=True)
+    resources = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
 
 class Network(models.Model):
     project = models.ForeignKey(Project)
@@ -190,3 +186,4 @@ class Instance(models.Model):
 
     def __unicode__(self):
         return self.name
+

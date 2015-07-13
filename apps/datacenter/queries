@@ -1,0 +1,37 @@
+-- import all users --
+INSERT INTO dciim.datacenter_project
+(
+    `name`
+    , `email`
+)
+SELECT
+    name as name
+    , extra as email
+FROM keystone.user WHERE enabled=1;
+
+
+-- import all tenants -----------------------------
+INSERT INTO dciim.datacenter_project
+(
+    `tenant_id`
+    , `name`
+    , `description`
+)
+SELECT
+    name as name
+    ,id as id
+    , description as description
+FROM keystone.project;
+----------------------------------------------------
+
+-- import all routers
+INSERT INTO dciim.datacenter_router
+(
+    `name`
+    , `description`
+)
+SELECT
+    name as name
+    , description as description
+FROM keystone.project;
+----------------------------------------------------
