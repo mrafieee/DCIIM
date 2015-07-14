@@ -1,0 +1,141 @@
+@font-face {
+  font-family: Nassim;
+  src: url('../fonts/BBCNassim.eot?#') format('eot'), /* IE6–8 */ url('../fonts/BBCNassim.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('../fonts/BBCNassim.ttf') format('truetype');
+  
+  /* Saf3—5, Chrome4+, FF3.5, Opera 10+ */
+}
+
+body                {}
+*[lang="en"] 	    {font-family: "Roboto";}
+
+
+* {
+  font-size: 16px;
+  font-family: Nassim, Tahoma, sans-serif;
+}
+
+.navbar-brand{
+ padding-left: 40px !important;
+}
+
+.moving-beta{
+ right: -100px;
+ background: url('../images/beta-version-pr2.png') right center no-repeat !important;
+ background-size: 70px !important;
+ height: 50px !important;
+ z-index: 20000 !important;
+ float: right !important;
+}
+
+.colored-nav-bar-menu{
+ height: 50px !important;
+ z-index: 10000 !important;
+ border-radius: 0 !important;
+ border: none !important;
+ box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25), 0 -1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+
+.form-dialog-step label{
+  font-size: 13px !important;
+}
+
+
+.form-dialog-step{
+ float: left !important;
+}
+
+
+#home-banner {
+  background: white url('../images/bgNew(Blue).png') repeat-x;
+  background-position-x: 0px !important;
+}
+
+
+
+.banner-text{
+ text-align: center !important;
+ padding-right: 50px !important;
+}
+
+.footer-menu{
+  text-align: left !important;
+}
+
+.footer-menu a{
+font-size: 16px;
+}
+
+.footer-menu{
+text-align: left;
+}
+
+.copyright{
+font-size: 16px;
+text-align: center !important;
+}
+
+.xaas-menu{
+ padding-right: 80px !important;
+}
+
+.xaas-menu a{
+ font-size: 17px;
+}
+
+#home-features p{
+ font-size: 15px;
+}
+
+.news-content{
+text-align: right !important;
+}
+
+#home-features{
+ padding-bottom: 0px !important;
+}
+
+.bx-pager-link{
+ display: none !important;
+}
+
+.news-padding{
+  padding-right: 50px !important;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+
+.help-block{
+ font-size: 15px !important;
+}
+
+.xaas-word{
+  font-size: 40px !important;
+}
+
+.xaas-word-pr{
+  font-family: Roboto !important;
+  font-size: 40px !important;
+}
+
+.signup-box p{
+ font-size: 15px;
+}
+
+.app-slider{
+ direction: ltr !important;
+}
+
+.app-description{
+ font-size: 15px !important;
+}
+
+.feature-text{
+ font-size: 17px !important;
+ color: gray;
+}
+
+.xaas-text{
+ font-size: 16px;
+}

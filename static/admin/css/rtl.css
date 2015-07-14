@@ -2,6 +2,8 @@ body {
     direction: rtl;
 }
 
+body, th, td, input, select, textarea{font-family: Tahoma, Arial, sans-serif;}
+
 /* LOGIN */
 
 .login .form-row {
@@ -82,11 +84,6 @@ div.breadcrumbs {
 
 table thead th.sorted .sortoptions {
    float: left;
-}
-
-thead th.sorted .text {
-	padding-right: 0;
-	padding-left: 42px;
 }
 
 /* dashboard styles */

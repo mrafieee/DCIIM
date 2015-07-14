@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block container %}
+
+    <div class="container-fluid" id="pages-container">
+
+        <div class="container">
+            <div class="row"></div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h1>{{ title }}</h1>
+                    <p>{{ message }}</p>
+                    <table border="1px">
+                        <tr>
+                            <td align="center"><b>Project Name</b></td>
+                            <td align="center"><b>Project UUID</b></td>
+                            <td align="center"><b>Network Name</b></td>
+                            <td align="center"><b>Router Name</b></td>
+                            <td align="center"><b>Port Mac Address</b></td>
+                            <td align="center"><b>IP Address</b></td>
+                        </tr>
+                    {% for item in routers %}
+                        <tr>
+                            <td>{{ item.project_name }}</td>
+                            <td>{{ item.project_id }}</td>
+                            <td>{{ item.network_name }}</td>
+                            <td>{{ item.router_name }}</td>
+                            <td>{{ item.port_mac_address }}</td>
+                            <td>{{ item.ip_address }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+
+                    <p><a href="/reports/">Back to reports</a></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+

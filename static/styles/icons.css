@@ -1,0 +1,21 @@
+.icon {
+  display: block;
+  float: left;
+  margin: 0 5px 0 0;
+}
+.icon.icon-eye {
+  width: 20px;
+  height: 20px;
+  background-position: 0px 0px;
+  background-image: url("/static/images/icons.png");
+  margin: 0;
+  float: none;
+}
+.icon.icon-eye-blocked {
+  width: 20px;
+  height: 20px;
+  background-position: 0px -20px;
+  background-image: url("/static/images/icons.png");
+  margin: 0;
+  float: none;
+}

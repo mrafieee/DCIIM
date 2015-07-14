@@ -1,13 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-    {{ message }}
-    {% for item in files %}
-        <li><a href="/extract-zip-file/{{ item }}">{{ item }}</a></li>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base.html' %}
+{% block container %}
+
+    <div class="container-fluid" id="pages-container">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    {{ message }}
+                    {% for item in files %}
+                        <li><a href="/extract-zip-file/{{ item }}">{{ item }}</a></li>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

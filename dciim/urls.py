@@ -1,15 +1,22 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from dciim import settings
 
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'dciim.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-    url(r'^list/$','apps.datacenter.views.list_backup_files', name='list'),
+    url(r'^$', 'apps.views.home', name='home'),
+    url(r'^static/(.*)$', 'django.views.static.serve', {'document_root': settings.BASE_DIR + '/static/'}),
+    url(r'^media/(.*)$', 'django.views.static.serve', {'document_root': settings.BASE_DIR + '/media/'}),
+    url(r'^static/admin/(.*)$', 'django.views.static.serve', {'document_root': settings.BASE_DIR + '/static/admin/'}),
+
+    url(r'^generate-report/$','apps.datacenter.views.list_backup_files', name='list'),
     url(r'^extract-zip-file/(?P<file>[\w\.-]+)/$','apps.datacenter.views.extract', name='extract'),
     url(r'^import/$','apps.datacenter.views.import_databases', name='import'),
 
-    url(r'^list/projects/$','apps.datacenter.views.list_projects', name='list-projects'),
+    url(r'^reports/$','apps.datacenter.views.reports', name='reports'),
+    url(r'^reports/projects-list/$','apps.datacenter.views.list_projects', name='list-projects'),
+    url(r'^reports/routers-list/$','apps.datacenter.views.list_routers', name='list-routers'),
+    url(r'^reports/subnets-list/$','apps.datacenter.views.list_subnets', name='list-subnets'),
+    url(r'^reports/floating-ip-list/$','apps.datacenter.views.list_floating_ip', name='list-floating-ips'),
 
-    url(r'^', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 ]
