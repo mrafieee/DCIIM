@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block container %}
+
+    <div class="container-fluid" id="pages-container">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h1>{{ list|length }} {{ title }}</h1>
+                    <p>{{ message }}</p>
+                    <table class="table table-striped">
+                        <tr>
+                            <td><b>Project</b></td>
+                            <td><b>Instance ID/hostname</b></td>
+                            <td><b>Create date</b></td>
+                            <td><b>Image name</b></td>
+                            <td><b>Disk (GB)</b></td>
+                            <td><b>Memory (MB)</b></td>
+                            <td><b>VCPU count</b></td>
+                            <td><b>Hypervisor hostname</b></td>
+                            <td><b>State</b></td>
+                            <td><b>Availability Zone</b></td>
+                            <td><b>Network info</b></td>
+                        </tr>
+                    {% for item in list %}
+                        <tr>
+                            <td>{{ item.project_name }}</td>
+                            <td>{{ item.id }}/{{ item.hostname }}</td>
+                            <td>{{ item.created_at }}</td>
+                            <td>{{ item.image_name }}</td>
+                            <td>{{ item.disk_gb }}</td>
+                            <td>{{ item.memory_mb }}</td>
+                            <td>{{ item.vcpus }}</td>
+                            <td>{{ item.host }}</td>
+                            <td>{{ item.vm_state }}</td>
+                            <td>{{ item.availability_zone }}</td>
+                            <td>{{ item.network_info|safe }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+
+                    <p><a href="/reports/">Back to reports</a></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+

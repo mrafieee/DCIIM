@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^reports/routers-list/$','apps.datacenter.views.list_routers', name='list-routers'),
     url(r'^reports/subnets-list/$','apps.datacenter.views.list_subnets', name='list-subnets'),
     url(r'^reports/floating-ip-list/$','apps.datacenter.views.list_floating_ip', name='list-floating-ips'),
+    url(r'^reports/demo-vpc-list/$','apps.datacenter.views.list_demo_vpc', name='list-demo-vpc'),
+    url(r'^reports/instances-list/$','apps.datacenter.views.list_instances', name='list-instances'),
 
     url(r'^admin/', include(admin.site.urls)),
 ]

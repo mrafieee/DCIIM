@@ -7,12 +7,12 @@
             <div class="row"></div>
             <div class="row">
                 <div class="col-md-12 col-sm-12">
-                    <h1>{{ title }}</h1>
+                    <h1>{{ projects|length }} {{ title }}</h1>
                     <p>{{ message }}</p>
-                    <table border="1px">
+                    <table class="table table-striped">
                         <tr>
-                            <td align="center"><b>Project Name</b></td>
-                            <td align="center"><b>Project UUID</b></td>
+                            <td><b>Project Name</b></td>
+                            <td><b>Project UUID</b></td>
                         </tr>
                     {% for item in projects %}
                         <tr>

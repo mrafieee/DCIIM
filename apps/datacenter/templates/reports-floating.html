@@ -6,15 +6,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-sm-12">
-                    <h1>{{ title }}</h1>
+                    <h1>{{ list|length }} {{ title }}</h1>
                     <p>{{ message }}</p>
-                    <table border="1px">
+                    <table class="table table-striped">
                         <tr>
-                            <td align="center"><b>Project Name</b></td>
-                            <!-- <td align="center"><b>Project ID</b></td> -->
-                            <td align="center"><b>floating_ip_address</b></td>
-                            <td align="center"><b>fixed_ip_address</b></td>
-                            <td align="center"><b>status</b></td>
+                            <td><b>Project Name</b></td>
+                            <!-- <td><b>Project ID</b></td> -->
+                            <td><b>floating_ip_address</b></td>
+                            <td><b>fixed_ip_address</b></td>
+                            <td><b>status</b></td>
                         </tr>
                     {% for item in list %}
                         <tr>

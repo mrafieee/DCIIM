@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block container %}
+
+    <div class="container-fluid" id="pages-container">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <h1>{{ list|length }} {{ title }}</h1>
+                    <p>{{ message }}</p>
+                    <table class="table table-striped">
+                        <tr>
+                            <td><b>Project Name</b></td>
+                            <td><b>Email Address</b></td>
+                            <td><b>Create Date</b></td>
+                            <td><b>Terminate Date</b></td>
+                            <td><b>Lifetime</b></td>
+                        </tr>
+                    {% for item in list %}
+                        <tr>
+                            <td>{{ item.tenantName }}</td>
+                            <td>{{ item.emailAddress }}</td>
+                            <td>{{ item.create_date }}</td>
+                            <td>{{ item.terminate_date }}</td>
+                            <td>{{ item.tenant_lifetime }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+
+                    <p><a href="/reports/">Back to reports</a></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
