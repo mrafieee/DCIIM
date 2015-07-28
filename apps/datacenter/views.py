@@ -1,13 +1,17 @@
 __author__ = 'mohammad'
 
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 import json
 import os, tarfile, sys, shutil,subprocess
 import MySQLdb as mdb
-from dciim.settings import BASE_DIR
+from dciim.settings import BASE_DIR,DATABASES
 from django.db import connections
 
+DB_HOST = DATABASES['default']['HOST']
+DB_USER = DATABASES['default']['USER']
+DB_PASS = DATABASES['default']['PASSWORD']
 
 def reports(request):
     return render_to_response('reports.html', context_instance=RequestContext(request))
@@ -52,15 +56,15 @@ def import_databases(request):
         if dbname == "mysql":
             continue
         proc = subprocess.Popen(["mysql",
-                                 "--user=%s" % 'root',
-                                 "--password=%s" % 'root',
+                                 "--user=%s" % DB_USER,
+                                 "--password=%s" % DB_PASS,
                                  dbname],
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
         out, err = proc.communicate(file(item).read())
     query = "ALTER TABLE keystonedb.`project` CHANGE `id` `id` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;"
     try:
-        con = mdb.connect('localhost', 'root', 'root', '')
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
         cur = con.cursor()
         cur.execute(query)
     finally:
@@ -106,7 +110,7 @@ def list_routers(request):
     query2 = "SELECT keystonedb.project.name as project_name,keystonedb.project.id as project_id,neutrondb.`networks`.`name` as network_name,`routers`.name as router_name,neutrondb.`ports`.`mac_address` as port_mac_address,neutrondb.`ipallocations`.`ip_address` FROM keystonedb.project inner join neutrondb.`networks` on neutrondb.`networks`.`tenant_id`=keystonedb.project.id inner join neutrondb.`routers` on neutrondb.`routers`.`tenant_id`=keystonedb.project.id inner join neutrondb.`ports` on neutrondb.`routers`.`id`=neutrondb.`ports`.`device_id` inner join neutrondb.`ipallocations` on neutrondb.`ports`.`id`=neutrondb.`ipallocations`.`port_id` "
     routers = {}
     try:
-        con = mdb.connect('localhost', 'root', 'root', '')
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
         cur = con.cursor()
         cur.execute(query)
         routers = dictfetchall(cur)
@@ -135,7 +139,7 @@ def list_subnets(request):
 
     subnets = {}
     try:
-        con = mdb.connect('localhost', 'root', 'root', '')
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
         cur = con.cursor()
         cur.execute(query)
         subnets = dictfetchall(cur)
@@ -153,7 +157,7 @@ def list_floating_ip(request):
             "ORDER BY project_name"
     f_ip = {}
     try:
-        con = mdb.connect('localhost', 'root', 'root', '')
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
         cur = con.cursor()
         cur.execute(query)
         f_ip = dictfetchall(cur)
@@ -180,14 +184,14 @@ def list_demo_vpc(request):
             "order by create_date;"
     list = {}
     try:
-        con = mdb.connect('localhost', 'root', 'root', 'keystonedb')
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, 'keystonedb')
         cur = con.cursor()
         con.query(query)
     finally:
         con.close()
 
     try:
-        con2 = mdb.connect('localhost', 'root', 'root', 'keystonedb')
+        con2 = mdb.connect(DB_HOST, DB_USER, DB_PASS, 'keystonedb')
         cur = con2.cursor()
         cur.execute(query2)
         list = dictfetchall(cur)
@@ -211,7 +215,7 @@ def list_instances(request):
     list = {}
 
     try:
-        con = mdb.connect('localhost', 'root', 'root', '')
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
         con.query(query1)
         con.query(query2)
         cur = con.cursor()
