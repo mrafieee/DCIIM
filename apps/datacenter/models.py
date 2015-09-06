@@ -44,6 +44,16 @@ GROUP_CHOICES = (
     ('OX', 'OX'),
     ('NeX', 'NeX'),
     ('DeX', 'DeX'),
+    ('Kerman', 'Kerman'),
+)
+
+CHANGES_TYPE_CHOICES = (
+    ('Intallation', 'Intallation'),
+    ('Openstack upgrade', 'Openstack upgrade'),
+    ('Openstack new component', 'Openstack new component'),
+    ('OS upgrade', 'OS upgrade'),
+    ('Security upgrade', 'Security upgrade'),
+    ('Other', 'Other'),
 )
 
 STATE_CHOICES = (
@@ -52,72 +62,6 @@ STATE_CHOICES = (
     ('Damaged', 'Damaged'),
     ('Not Configured', 'Not Configured'),
 )
-######################################################################
-
-# class User(models.Model):
-#     name = models.CharField(_('User full name'), max_length=100, blank=False)
-#     email = models.CharField(max_length=100, blank=False)
-#     project = models.ForeignKey(Project)
-#     role = models.CharField(max_length=100, blank=False, choices=USER_ROLE_CHOICES, default="member")
-#
-#     def __unicode__(self):
-#         return self.name
-#
-# class Customer(models.Model):
-#     user = models.ForeignKey(User)
-#     contract_date = models.DateTimeField(default=datetime.now())
-#     phone = models.CharField(max_length=100, blank=False)
-#     secondary_email = models.CharField(max_length=100, blank=True, null=True)
-#     address = models.CharField(max_length=100, blank=True, null=True)
-#     description = models.TextField(blank=True, null=True)
-#
-#     def __unicode__(self):
-#         return self.user
-#
-#
-# class Project(models.Model):
-#     name = models.CharField(_('Project Name'), max_length=300, blank=False, help_text=_('Project / Tenant name'))
-#     tenant_id = models.CharField(max_length=100, blank=True, null=True)
-#     start_date = models.DateTimeField(default=datetime.now())
-#     stop_date = models.DateTimeField(blank=True, null=True)
-#     owner = models.ForeignKey(Customer)
-#     description = models.TextField(blank=True, null=True)
-#     resources = models.TextField(blank=True, null=True)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-# class Network(models.Model):
-#     project = models.ForeignKey(Project)
-#     name = models.CharField(_('Network name'), max_length=100, blank=False)
-#     network = models.CharField(max_length=100, blank=False)
-#     netmask = models.CharField(max_length=100, blank=False)
-#     type = models.CharField(max_length=100, blank=False, choices=NET_TYPE_CHOICES, default="local")
-#     gateway = models.CharField(_('Gateway IP address'), max_length=100, blank=False)
-#     dhcp = models.BooleanField(default=True)
-#
-#     def __unicode__(self):
-#         return self.network
-#
-#
-# class Router(models.Model):
-#     project = models.ForeignKey(Project)
-#     name = models.CharField(_('Router name'), max_length=100, blank=False)
-#     internal_ip = models.CharField(_('Data center internal IP address'), max_length=100, blank=False)
-#     external_ip = models.CharField(_('Valid IP address'), max_length=100, null=True)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#
-# class Port(models.Model):
-#     router = models.ForeignKey(Router)
-#     network = models.ForeignKey(Network)
-#     ip = models.CharField(_('port IP address'), max_length=100, blank=False)
-#
-#     def __unicode__(self):
-#         return self.name
-#
 
 class InfrastructureType(models.Model):
     class Meta:
@@ -179,26 +123,32 @@ class Nic(models.Model):
     def __unicode__(self):
         return self.internal_ip
 
+class Changes(models.Model):
+    infrastructure = models.ForeignKey(Infrastructure)
+    date = models.DateTimeField(default=datetime.now())
+    type = models.CharField(max_length=100, blank=False,choices=CHANGES_TYPE_CHOICES, default='Openstack upgrade')
+    description = models.TextField(blank=True, null=True)
 
-# class Instance(models.Model):
-#     project = models.ForeignKey(Project)
-#     machine = models.ForeignKey(Infrastructure)
-#     name = models.CharField(max_length=100, blank=False)
-#     ram = models.CharField(max_length=100, blank=True, null=True)
-#     hdd = models.CharField(max_length=100, blank=True, null=True)
-#     cpu = models.CharField(max_length=100, blank=True, null=True)
-#     flavor = models.CharField(max_length=100, blank=True, null=True)
-#     glance_image = models.CharField(max_length=100, blank=True, null=True)
-#     hypervisor = models.CharField(max_length=100, blank=False, choices=HYPERVISOR_CHOICES, default="qemu")
-#     gateway = models.ForeignKey(Router)
-#     network = models.ForeignKey(Network)
-#     openstack_internal_ip = models.CharField(_('Openstack internal IP address'), max_length=100, blank=False)
-#     internal_ip = models.CharField(_('Datacenter internal IP address'), max_length=100, blank=False)
-#     external_ip = models.CharField(_('Valid IP address'), max_length=100, blank=False)
-#     datacenter_firewall = models.CharField(max_length=100, blank=True, null=True)
-#     internal_firewall = models.CharField(max_length=100, blank=True, null=True, default="default")
-#     description = models.TextField(blank=True, null=True)
-#
-#     def __unicode__(self):
-#         return self.name
+
+class History(models.Model):
+    class Meta:
+        verbose_name_plural = _('History')
+
+    backup_file = models.CharField(max_length=100, null=True, blank=True)
+    instance_count = models.CharField(max_length=100, null=True, blank=True)
+    projects_count = models.CharField(max_length=100, null=True, blank=True)
+    floating_ips_count = models.CharField(max_length=100, null=True, blank=True)
+    images_count = models.CharField(max_length=100, null=True, blank=True)
+    compute_node_count = models.CharField(max_length=100, null=True, blank=True)
+    controller_node_count = models.CharField(max_length=100, null=True, blank=True)
+    network_node_count = models.CharField(max_length=100, null=True, blank=True)
+    network_count = models.CharField(max_length=100, null=True, blank=True)
+    routers_count = models.CharField(max_length=100, null=True, blank=True)
+    #resources = models.CharField(max_length=100, null=True, blank=True)
+    total_vcpu = models.CharField(max_length=100, null=True, blank=True)
+    total_memory = models.CharField(max_length=100, null=True, blank=True)
+    total_local_disk =models.CharField(max_length=100, null=True, blank=True)
+    vcpu_used = models.CharField(max_length=100, null=True, blank=True)
+    memory_used = models.CharField(max_length=100, null=True, blank=True)
+    local_disk_used = models.CharField(max_length=100, null=True, blank=True)
 

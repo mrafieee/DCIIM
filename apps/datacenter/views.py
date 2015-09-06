@@ -8,10 +8,65 @@ import os, tarfile, sys, shutil,subprocess
 import MySQLdb as mdb
 from dciim.settings import BASE_DIR,DATABASES
 from django.db import connections
+from models import History
 
 DB_HOST = DATABASES['default']['HOST']
 DB_USER = DATABASES['default']['USER']
 DB_PASS = DATABASES['default']['PASSWORD']
+
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
+
+def query(query):
+    try:
+        con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
+        cur = con.cursor()
+        cur.execute(query)
+        list = dictfetchall(cur)
+    finally:
+        con.close()
+
+    return list
+
+def history(backup_file_name):
+    instance_count = "SELECT count(*) as `instance_count` FROM `novadb`.`instances` WHERE `deleted_at` IS NULL;"
+    projects_count = "SELECT count(*) as `projects_count` FROM `keystonedb`.`project` WHERE 1;"
+    floating_ips_count = "SELECT count(*) as `floating_ips_count` FROM `neutrondb`.`floatingips` WHERE `fixed_ip_address` is not null;"
+    images_count = "SELECT count(*) as `images_count` FROM `glancedb`.`images` WHERE `deleted_at` is null;"
+    compute_node_count = "SELECT count(*) as `compute_node_count` FROM `novadb`.`compute_nodes` WHERE `deleted_at` is null;"
+    controller_node_count ="SELECT count(*) as `controller_node_count` FROM `novadb`.`services` WHERE `topic`= 'scheduler'"
+    network_node_count = "SELECT count(*) as `network_node_count` FROM `neutrondb`.`agents` WHERE `agent_type`='L3 agent'"
+    network_count = "SELECT count(*) as `network_count` FROM `neutrondb`.`networks`"
+    router_count = "SELECT count(*) as `router_count` FROM `neutrondb`.`routers`"
+    resources = "SELECT sum(`vcpus`) as total_vcpu, sum(`memory_mb`) as total_memory, sum(`local_gb`) as total_local_disk, sum(`vcpus_used`) as vcpu_used, sum(`memory_mb_used`) as memory_used, sum(`local_gb_used`) as local_disk_used FROM `novadb`.`compute_nodes` WHERE `deleted_at` is null;"
+
+    history = History.objects.create()
+    history.backup_file = backup_file_name
+    history.instance_count = query(instance_count)[0]["instance_count"]
+    history.projects_count = query(projects_count)[0]["projects_count"]
+    history.floating_ips_count = query(floating_ips_count)[0]["floating_ips_count"]
+    history.images_count = query(images_count)[0]["images_count"]
+    history.compute_node_count = query(compute_node_count)[0]["compute_node_count"]
+    history.controller_node_count = query(controller_node_count)[0]["controller_node_count"]
+    history.network_node_count = query(network_node_count)[0]["network_node_count"]
+    history.network_count = query(network_count)[0]["network_count"]
+    history.routers_count = query(router_count)[0]["router_count"]
+    history.total_vcpu = query(resources)[0]["total_vcpu"]
+    history.total_memory = query(resources)[0]["total_memory"]
+    history.total_local_disk = query(resources)[0]["total_local_disk"]
+    history.vcpu_used = query(resources)[0]["vcpu_used"]
+    history.memory_used = query(resources)[0]["memory_used"]
+    history.local_disk_used = query(resources)[0]["local_disk_used"]
+    history.save()
+
+    # end of history section
+    return True
+
 
 def reports(request):
     return render_to_response('reports.html', context_instance=RequestContext(request))
@@ -23,7 +78,6 @@ def list_backup_files(request):
     return render_to_response('generate-list-files.html', {'files': files}, context_instance=RequestContext(request))
 
 def extract(request, file):
-    print file
     tar_address = BASE_DIR+"/media/uploads/"+file
     print tar_address
     extract_path = BASE_DIR+"/media/uploads/tmp/"
@@ -41,27 +95,22 @@ def extract(request, file):
         name = os.path.basename(sys.argv[0])
         print name[:name.rfind('.')], '<filename>'
 
-    message = file +" has successfully extracted"
-    return render_to_response('generate-extract.html', {'message': message}, context_instance=RequestContext(request))
-
-def import_databases(request):
     path = BASE_DIR+"/media/uploads/tmp/tmp/"
     sql_files = os.listdir(path)
-
     for item in sql_files:
-        print item
         dbname = item.split("_",1)[0]
         item = path + item
-        print dbname
         if dbname == "mysql":
             continue
+
         proc = subprocess.Popen(["mysql",
                                  "--user=%s" % DB_USER,
                                  "--password=%s" % DB_PASS,
                                  dbname],
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
-        out, err = proc.communicate(file(item).read())
+        output = proc.communicate('source ' + item)[0]
+
     query = "ALTER TABLE keystonedb.`project` CHANGE `id` `id` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;"
     try:
         con = mdb.connect(DB_HOST, DB_USER, DB_PASS, '')
@@ -70,17 +119,12 @@ def import_databases(request):
     finally:
         con.close()
 
+    history(file)
+
     message = "Databases has successfully imported and temp directory removed"
     shutil.rmtree(BASE_DIR+"/media/uploads/tmp/")
     return render_to_response('generate-import.html', {'files':sql_files, 'message': message}, context_instance=RequestContext(request))
 
-def dictfetchall(cursor):
-    "Returns all rows from a cursor as a dict"
-    desc = cursor.description
-    return [
-        dict(zip([col[0] for col in desc], row))
-        for row in cursor.fetchall()
-    ]
 
 def list_projects(request):
     title = "Projects"
