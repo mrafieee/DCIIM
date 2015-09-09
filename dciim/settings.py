@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+print BASE_DIR
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -38,8 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps',
-    'apps.datacenter',
     'apps.customer',
+    'apps.datacenter',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,7 +58,8 @@ ROOT_URLCONF = 'dciim.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+	'DIRS': [os.path.join(BASE_DIR, 'templates')],
+#        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,9 +81,9 @@ WSGI_APPLICATION = 'dciim.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'dciim',
+        'NAME': 'xim',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '123456789*',
         'HOST': '127.0.0.1',
         'PORT': '',
     },
@@ -90,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'keystonedb',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '123456789*',
         'HOST': '127.0.0.1',
         'PORT': '',
     }

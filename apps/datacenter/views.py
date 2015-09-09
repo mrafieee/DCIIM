@@ -123,6 +123,13 @@ def extract(request, file):
 
     message = "Databases has successfully imported and temp directory removed"
     shutil.rmtree(BASE_DIR+"/media/uploads/tmp/")
+
+    filename = BASE_DIR+"/media/uploads/"+file
+    try:
+        os.remove(filename)
+    except OSError:
+        pass
+
     return render_to_response('generate-import.html', {'files':sql_files, 'message': message}, context_instance=RequestContext(request))
 
 
